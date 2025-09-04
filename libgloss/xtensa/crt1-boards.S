@@ -95,8 +95,9 @@ _start:
 	rsync
 
 	// Set VECBASE to use our vectors instead vectors in ROM
-	movi	a1, _vector_table
-	wsr	a1, VECBASE
+	// NOTE(MeteorsLiu): This will cause stdio stuck
+	// movi	a1, _vector_table
+	// wsr	a1, VECBASE
 
 	// Initialize the stack pointer.
 	// See the "ABI and Software Conventions" chapter in the
