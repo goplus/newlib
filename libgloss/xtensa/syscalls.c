@@ -75,7 +75,18 @@ int
 __WEAK_FUNCTION_ATTR__
 _open (const char *file, int flags, int mode)
 {
-    return __semihosting_call(SYS_open, (int) file, flags, mode, 0);
+    int result = __semihosting_call(SYS_open, (int)file, flags, mode, 0);
+    if (result >= 0)
+        return result;
+
+    // semihosting is not support, mock some necessary paths
+    if (strcmp(file, "/dev/stdin") == 0)
+        return 0;
+    if (strcmp(file, "/dev/stdout") == 0)
+        return 1;
+    if (strcmp(file, "/dev/stderr") == 0)
+        return 2;
+    return -1;
 }
 
 
