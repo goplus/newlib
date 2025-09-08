@@ -65,7 +65,9 @@ __attribute__ ((noreturn))
 _exit (int status)
 {
     __semihosting_call(SYS_exit, status, 0, 0, 0);
-
+    // refer to esp-idf, use an invalid instruction to make it panic 
+    asm("ill");
+    
     for (;;) {
         ;
     }
