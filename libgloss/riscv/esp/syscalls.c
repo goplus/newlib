@@ -66,6 +66,9 @@ void
 __attribute__ ((noreturn))
 _exit (int status)
 {
+    // refer to esp-idf, use an invalid instruction to make it panic 
+    asm("unimp");
+
     for (;;) {
         ;
     }
