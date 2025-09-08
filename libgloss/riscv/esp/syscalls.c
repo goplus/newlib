@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/stat.h>
+#include <string.h>
 #include <reent.h>
 #include "esp_board.h"
 #include "config.h"
