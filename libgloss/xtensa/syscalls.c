@@ -2,6 +2,7 @@
 #include <syscalls.h>
 #include <sys/stat.h>
 #include <soc/uart.h>
+#include <string.h>
 
 #if defined (OPENOCD_SEMIHOSTING) || (QEMU_SEMIHOSTING)
 # define WITH_SEMIHOSTING
