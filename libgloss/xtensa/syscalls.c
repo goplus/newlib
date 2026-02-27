@@ -11,6 +11,11 @@
 # define __WEAK_FUNCTION_ATTR__ __attribute__((__weak__))
 #endif
 
+/* Enable semihosting only for SYS_exit, keep other syscalls unchanged. */
+#ifdef QEMU_SEMIHOSTING_EXIT_ONLY
+# define WITH_SEMIHOSTING_EXIT_ONLY
+#endif
+
 
 /* __semihosting_call is a function in case semihosting usage, macro (-1) otherwise */
 #ifdef WITH_SEMIHOSTING
@@ -58,13 +63,25 @@ __semihosting_init (void)
 # define __semihosting_call(...) (-1)
 #endif // WITH_SEMIHOSTING
 
+#if defined (WITH_SEMIHOSTING_EXIT_ONLY) && !defined (WITH_SEMIHOSTING)
+static inline int
+__attribute__ ((always_inline))
+__semihosting_exit_call(int status)
+{
+    extern int __sim_call(int id, int arg1, int arg2, int arg3, int arg4);
+    return __sim_call(SYS_exit, status, 0, 0, 0);
+}
+#else
+# define __semihosting_exit_call(status) __semihosting_call(SYS_exit, status, 0, 0, 0)
+#endif
+
 
 void
 __WEAK_FUNCTION_ATTR__
 __attribute__ ((noreturn))
 _exit (int status)
 {
-    __semihosting_call(SYS_exit, status, 0, 0, 0);
+    __semihosting_exit_call(status);
     // refer to esp-idf, use an invalid instruction to make it panic 
     asm("ill");
     
