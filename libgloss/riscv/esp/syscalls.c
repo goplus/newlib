@@ -13,6 +13,11 @@ _fstat(int file, struct stat *st)
     if (file <= STDERR_FILENO)
     {
         st->st_mode = S_IFCHR;
+        /* Keep st_blksize initialized. Uninitialized garbage here can break
+         * stdio buffer sizing paths and trigger crashes.
+         * See: https://github.com/goplus/llgo/issues/1723
+         */
+        st->st_blksize = 0;
         return  0;
     }
     return  -1;
