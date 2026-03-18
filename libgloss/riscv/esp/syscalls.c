@@ -12,6 +12,8 @@ _fstat(int file, struct stat *st)
 {
     if (file <= STDERR_FILENO)
     {
+        /* stdio may inspect st_blksize when HAVE_BLKSIZE is enabled. */
+        memset(st, 0, sizeof(*st));
         st->st_mode = S_IFCHR;
         return  0;
     }
